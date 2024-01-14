@@ -44,7 +44,7 @@ These instructions will help you set up the project on your local machine.
 Install the required packages using:
 
 ```bash
-pip3 install -r requirements.lock
+pip3 install -r requirements.txt
 ```
 
 ### Run dev server

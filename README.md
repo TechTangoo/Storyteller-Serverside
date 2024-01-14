@@ -41,10 +41,10 @@ These instructions will help you set up the project on your local machine.
 
 ### Installing Required Packages
 
-Install the required packages using:
+Install the required packages using(in venv):
 
 ```bash
-pip3 install -r requirements.lock
+pip3 install -r requirements.txt
 ```
 
 ### Run dev server

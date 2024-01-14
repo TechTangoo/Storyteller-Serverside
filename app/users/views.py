@@ -8,7 +8,6 @@ def new_user():
 
 @bp.route("/login", methods=['GET'])
 def login_user():
-    print("lgon user")
     return "authorization"
 
 # @bp.route("/<string:userid>", methods=['GET'])

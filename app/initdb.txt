@@ -1,0 +1,50 @@
+from supb import supabase
+
+
+def create_tables():
+    tables = {
+        'comments': {
+            'id': 'SERIAL PRIMARY KEY',
+            'created_at': 'TIMESTAMP DEFAULT CURRENT_TIMESTAMP',
+            'storyid': 'INTEGER REFERENCES story(id)',
+            'commented_by': 'INTEGER REFERENCES "user"(id)',
+            'type': 'TEXT',
+            'description': 'TEXT',
+            'enabled': 'BOOLEAN'
+        },
+        'story': {
+            'id': 'SERIAL PRIMARY KEY',
+            'created_at': 'TIMESTAMP DEFAULT CURRENT_TIMESTAMP',
+            'title': 'TEXT',
+            'description': 'TEXT',
+            'liked_by': 'INTEGER REFERENCES "user"(id)',
+            'uploaded_by': 'INTEGER REFERENCES "user"(id)',
+            'img': 'TEXT',
+            'updated_at': 'TIMESTAMP DEFAULT CURRENT_TIMESTAMP',
+            'category': 'TEXT',
+            'enabled': 'BOOLEAN',
+            'likes': 'NUMERIC'
+        },
+        'user': {
+            'id': 'SERIAL PRIMARY KEY',
+            'created_at': 'TIMESTAMP DEFAULT CURRENT_TIMESTAMP',
+            'profile': 'TEXT',
+            'status': 'TEXT',
+            'user_name': 'VARCHAR',
+            'email': 'TEXT UNIQUE',
+            'passcode': 'TEXT NOT NULL',
+            'saved_stories': 'INTEGER REFERENCES story(id)',
+            'enabled': 'BOOLEAN'
+        }
+    }
+
+    try:
+        for table_name, table_schema in tables.items():
+            response = supabase.client.table_from_definition(table_name, table_schema)
+            if response['error'] is not None:
+                print(f"Error creating table '{table_name}': {response['error']['message']}")
+            else:
+                print(f"Table '{table_name}' created successfully.")
+    except Exception as e:
+        print(f"Error creating tables: {str(e)}")
+

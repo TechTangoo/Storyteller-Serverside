@@ -3,16 +3,6 @@ import json
 from app import app, Supabase
 
 
-@app.route("/", methods=['GET'])
-def home():
-    return "Hello, Hi"
-
-
-@app.route("/login", methods=['POST'])
-def login():
-    return 'Loggin succesful'
-
-
 @app.route("/register", methods=['POST'])
 def register():
     data = request.get_json() or {}

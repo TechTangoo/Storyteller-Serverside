@@ -10,7 +10,7 @@ Supabase: Client = create_client(url, key)
 app = Flask(__name__)
 app.config.from_object(Config)
 
-from app.users import bp as user_blueprint
+from app.users import user_bp as user_blueprint
 
 app.register_blueprint(user_blueprint, url_prefix='/user')
 

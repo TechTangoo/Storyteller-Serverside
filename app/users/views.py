@@ -36,7 +36,7 @@ def new_user():
         return jsonify({'error': str(e)}), 500
 
 
-@user_bp.route("/login", methods=['GET'])  # Change method to POST
+@user_bp.route("/login", methods=['POST'])  # Change method to POST
 def login_user():
     try:
         data = request.get_json() or {}

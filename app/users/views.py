@@ -1,12 +1,12 @@
 from app.users import user_bp
 from flask import request, jsonify, g, url_for, render_template, redirect
-from app import Supabase
 from app.users.functions import hash_password, verify_password
 
 
 @user_bp.route("/register", methods=['POST'])
 def new_user():
     try:
+        from app import Supabase
         data = request.get_json() or {}
         username = data.get('fullname')
         email = data.get('email')
@@ -39,6 +39,7 @@ def new_user():
 @user_bp.route("/login", methods=['POST'])  # Change method to POST
 def login_user():
     try:
+        from app import Supabase
         data = request.get_json() or {}
         email = data.get('email')
         password = data.get('password')

@@ -1,4 +1,7 @@
-from flask import Flask
+from app import views
+from app.story import story_bp as story_blueprint
+from app.users import user_bp as user_blueprint
+from flask import Flask, jsonify
 from .config import Config
 from supabase import create_client, Client
 from flask_cors import CORS
@@ -13,8 +16,10 @@ app.config.from_object(Config)
 
 CORS(app)
 
-from app.users import user_bp as user_blueprint
+
+@app.route("/", methods=['POST'])
+def home():
+    return jsonify({'status': 1, 'message': 'server is running at 5000 port'})
 
 app.register_blueprint(user_blueprint, url_prefix='/user')
-
-from app import views
+app.register_blueprint(story_blueprint, url_prefix='/story')

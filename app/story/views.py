@@ -15,7 +15,6 @@ def create():
             'user_id').eq('user_id', userid).eq('enabled', True).execute()
         if user_data_res.data is None:
             return jsonify({'status': 0, 'message': 'Author does not exist'}), 400
-
         # * get all the variables for request body for query
         # ! Also check for all the fields to exist
         title = data.get('title')
@@ -40,6 +39,7 @@ def create():
         }
         # * create query
         create_query = Supabase.table('Story').insert(story_body).execute()
+
         # * check if query is successfully executed or not
         if create_query.data:
             return jsonify({'status': 1, 'message': 'Successfully created'}), 200
@@ -57,10 +57,12 @@ def get_story(storyid):
         from app import Supabase  # * to avoid circular error
         # * fetch query
         story_query = Supabase.table('Story').select(
-            '*').eq('story_id', storyid).eq('enabled', True).execute()
+            "*",
+            "User(*)"
+            ).eq('story_id', storyid).eq('enabled', True).execute()
 
         if story_query.data:
-            return jsonify({'status': 1, 'data': story_query.data}), 200
+            return jsonify({'status': 1, 'data': 0 / story_query.data}), 200
         else:
             return jsonify({'status': 0, 'message': 'Failed to fetch story with given storyid'}), 500
     except Exception as e:
@@ -75,12 +77,60 @@ def get_user_story(userid):
         from app import Supabase  # * to avoid circular error
         # * fetch query
         story_query = Supabase.table('Story').select(
-            '*').eq('author', userid).eq('enabled', True).execute()
+            "*",
+            "User(*)"
+            ).eq('author', userid).eq('enabled', True).execute()
 
         if story_query.data:
             return jsonify({'status': 1, 'data': story_query.data}), 200
         else:
-            return jsonify({'status': 0, 'message': 'Failed to fetch story with given storyid'}), 500
+            return jsonify({'status': 0, 'message': 'Failed to fetch story with given userid'}), 500
+    except Exception as e:
+        return jsonify({'status': 0, 'message': str(e)}), 500
+
+# * get all stories from category
+
+
+@story_bp.route("/category/<string:category>", methods=['GET'])
+def get_category_story(category):
+    try:
+        from app import Supabase  # * to avoid circular error
+        # * fetch query
+        story_query = Supabase.table('Story').select(
+            "*",
+            "User(*)"
+            ).eq('category', category).eq('enabled', True).execute()
+
+        if story_query.data:
+            return jsonify({'status': 1, 'data': story_query.data}), 200
+        else:
+            return jsonify({'status': 0, 'message': 'Failed to fetch story with given category'}), 500
+    except Exception as e:
+        return jsonify({'status': 0, 'message': str(e)}), 500
+
+# * get all stories from author name or title of the story
+
+
+@story_bp.route("/search/<string:searchterm>", methods=['GET'])
+def get_search_story(searchterm):
+
+    try:
+        from app import Supabase  # * to avoid circular error
+
+        # Build query
+        story_query = Supabase.table("Story").select(
+            "*",
+            "User(*)"
+        ).eq('enabled', True).ilike("title", f"%{searchterm}%")
+
+        # Execute query
+        results = story_query.execute()
+
+        if results.data is not None:
+            return jsonify({'status': 1, 'data': results.data}), 200
+        else:
+            return jsonify({'status': 0, 'message': 'No stories found'}), 500
+
     except Exception as e:
         return jsonify({'status': 0, 'message': str(e)}), 500
 
